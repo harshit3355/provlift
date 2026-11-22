@@ -1,0 +1,58 @@
+# golangci-lint configuration (v2 format).
+#
+# CI runs the exact version pinned in .github/workflows/ci.yml. To reproduce a
+# CI failure locally, install that version and run:
+#
+#   golangci-lint run ./...
+version: "2"
+
+issues:
+  # Report every finding. The defaults stop after three identical messages,
+  # which hides how much is left to fix.
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+linters:
+  # The v2 default set: errcheck, govet, ineffassign, staticcheck, unused.
+  default: standard
+  enable:
+    # internal/registry makes authenticated HTTP requests; a response body that
+    # is never closed leaks a connection.
+    - bodyclose
+    # Wrapped errors must be wrapped with %w and compared with errors.Is/As.
+    - errorlint
+    - gocritic
+    - misspell
+  settings:
+    errcheck:
+      # Messages written to the user's terminal, or to a test's HTTP response.
+      # A failed write has nothing to recover, and checking each one would bury
+      # the output code. Every other unchecked error is still reported, and an
+      # intentional discard is written as `_ = f.Close()`.
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+    gocritic:
+      # Diagnostic checks only. The style, performance and opinionated tags
+      # would produce a large first diff for little benefit.
+      disable-all: true
+      enabled-tags:
+        - diagnostic
+  exclusions:
+    rules:
+      # stop only cancels the signal context, and the process is exiting.
+      - path: ^cmd/provlift/main\.go$
+        linters: [gocritic]
+        text: exitAfterDefer
+      # The argument is a Markdown code span, not a Go string literal: %#q
+      # would switch to a double-quoted string whenever the text holds a
+      # backquote, which breaks the span.
+      - path: ^internal/pullrequest/pullrequest\.go$
+        linters: [gocritic]
+        text: sprintfQuotedString
+      # A deliberate multi-sentence message that ends in a full stop. The
+      # upgrade docs quote it word for word.
+      - path: ^internal/cli/upgrade\.go$
+        linters: [staticcheck]
+        text: ST1005

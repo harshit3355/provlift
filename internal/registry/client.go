@@ -287,7 +287,7 @@ func (c *Client) get(ctx context.Context, endpoint, host string) (body []byte, r
 		}
 		return nil, true, fmt.Errorf("requesting %s: %w", endpoint, err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Cap the read so a misbehaving endpoint cannot exhaust memory.
 	body, err = io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes+1))

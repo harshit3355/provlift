@@ -171,7 +171,7 @@ func TestVersionsNamesUnreachableRegistry(t *testing.T) {
 
 func TestNetworkCauseIgnoresNonNetworkErrors(t *testing.T) {
 	dns := &net.DNSError{Err: "no such host", Name: "tf.invalid-host.example", IsNotFound: true}
-	if cause, ok := networkCause(&url.Error{Op: "Get", URL: "https://tf.invalid-host.example", Err: dns}); !ok || cause != error(dns) {
+	if cause, ok := networkCause(&url.Error{Op: "Get", URL: "https://tf.invalid-host.example", Err: dns}); !ok || !errors.Is(cause, dns) {
 		t.Errorf("networkCause(DNS error) = %v, %v; want the DNS error", cause, ok)
 	}
 	redirect := &url.Error{Op: "Get", URL: "https://x", Err: errors.New("registry redirect changed host or scheme")}
