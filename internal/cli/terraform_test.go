@@ -54,7 +54,7 @@ func runFakeTerraform() int {
 		if err == nil {
 			cwd, _ := os.Getwd()
 			fmt.Fprintf(f, "%s\t%s\n", filepath.Base(cwd), strings.Join(args, " "))
-			f.Close()
+			_ = f.Close()
 		}
 	}
 

@@ -20,7 +20,9 @@ func TestMain(m *testing.M) {
 	switch os.Getenv(processModeEnv) {
 	case "provlift":
 		// Terraform started by this process is the failing impersonation.
-		os.Setenv(processModeEnv, "terraform")
+		if err := os.Setenv(processModeEnv, "terraform"); err != nil {
+			panic(err)
+		}
 		main()
 		os.Exit(0)
 	case "terraform":

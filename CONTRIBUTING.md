@@ -50,9 +50,14 @@ Run the same checks CI runs:
 ```sh
 gofmt -l .            # must print nothing; fix with gofmt -w .
 go vet ./...
+golangci-lint run ./...
 go mod tidy           # must leave go.mod and go.sum unchanged
 go test -race ./...   # -race needs cgo; plain go test ./... is fine locally
 ```
+
+`golangci-lint` reads [.golangci.yml](.golangci.yml). Install the version pinned in
+[.github/workflows/ci.yml](.github/workflows/ci.yml) so your result matches CI;
+see the [installation guide](https://golangci-lint.run/docs/welcome/install/).
 
 CI additionally enforces at least 80% test coverage, cross-compiles for Linux,
 macOS and Windows, lints the GitHub Actions workflows with `actionlint`, and runs

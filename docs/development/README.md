@@ -12,7 +12,11 @@ go build ./...
 go test ./... -count=1
 go vet ./...
 gofmt -l .
+golangci-lint run ./...
 ```
+
+`golangci-lint` reads [.golangci.yml](../../.golangci.yml); use the version pinned
+in [ci.yml](../../.github/workflows/ci.yml).
 
 Run the CLI without installing it:
 
@@ -49,7 +53,7 @@ pull request:
 
 | Job | Gate |
 |---|---|
-| Format and vet | `gofmt`, `go mod tidy`, `go vet` |
+| Format and vet | `gofmt`, `go mod tidy`, `go vet`, `golangci-lint` (pinned version, [.golangci.yml](../../.golangci.yml)) |
 | Go unit and package tests | `go test -race ./...`, coverage ≥ 80% and uploaded coverage report |
 | Cross-compile | linux and darwin on amd64 and arm64; windows on amd64 |
 | Lint workflows | `actionlint` over `.github/workflows` *and* `examples/workflows` |

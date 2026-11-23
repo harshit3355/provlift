@@ -165,7 +165,7 @@ func Satisfies(constraint string, v *version.Version) (bool, error) {
 	}
 	cs, err := newConstraint(constraint)
 	if err != nil {
-		return false, fmt.Errorf("%w: %q: %v", ErrUnsupportedConstraint, constraint, err)
+		return false, fmt.Errorf("%w: %q: %w", ErrUnsupportedConstraint, constraint, err)
 	}
 	if IsPrerelease(v) {
 		for _, raw := range strings.Split(constraint, ",") {
@@ -185,7 +185,7 @@ func newConstraint(constraint string) (version.Constraints, error) {
 	terms := strings.Split(constraint, ",")
 	for i, raw := range terms {
 		m := termPattern.FindStringSubmatch(strings.TrimSpace(raw))
-		if m == nil || m[1] != "~>" {
+		if len(m) < 2 || m[1] != "~>" {
 			continue
 		}
 		literal := strings.TrimSpace(m[2])

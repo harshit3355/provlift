@@ -278,11 +278,11 @@ func initWithPlannedProviders(ctx context.Context, runner *terraform.Runner, roo
 		}
 	}()
 	if _, err = created.Write(file.Bytes()); err != nil {
-		created.Close()
+		_ = created.Close() // the write error is the one to report
 		return result, err
 	}
-	if err = created.Close(); err != nil {
-		return result, err
+	if closeErr := created.Close(); closeErr != nil {
+		return result, closeErr
 	}
 	return runner.Init(ctx, root.Dir, terraform.InitOptions{Upgrade: true, Backend: backend})
 }
@@ -323,7 +323,7 @@ func verifyPlannedLock(root *model.Module, allowed map[string]string, original [
 
 func restoreLockAfterFailure(root *model.Module, original []byte, hadLock bool, failure error) error {
 	if err := restoreOriginalLock(root, original, hadLock); err != nil {
-		return fmt.Errorf("%w; restoring original lock failed: %v", failure, err)
+		return fmt.Errorf("%w; restoring original lock failed: %w", failure, err)
 	}
 	return fmt.Errorf("%w; original lock restored", failure)
 }

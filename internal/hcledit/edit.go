@@ -149,14 +149,14 @@ func applyWithWriter(edits []Edit, write func(string, []byte) error) ([]Result, 
 		if err != nil || !bytes.Equal(current, originals[r.File]) {
 			rollbackErr := rollbackFiles(written, originals)
 			if rollbackErr != nil {
-				return nil, fmt.Errorf("%w; rollback failed: %v", staleError(r.File), rollbackErr)
+				return nil, fmt.Errorf("%w; rollback failed: %w", staleError(r.File), rollbackErr)
 			}
 			return nil, staleError(r.File)
 		}
 		if err := write(r.File, r.Content); err != nil {
 			rollbackErr := rollbackFiles(append(written, r.File), originals)
 			if rollbackErr != nil {
-				return nil, fmt.Errorf("applying %s: %w; rollback failed: %v", r.File, err, rollbackErr)
+				return nil, fmt.Errorf("applying %s: %w; rollback failed: %w", r.File, err, rollbackErr)
 			}
 			return nil, fmt.Errorf("applying %s: %w", r.File, err)
 		}
@@ -327,9 +327,11 @@ func writeFileAtomic(path string, content []byte) error {
 	}
 	tmpName := tmp.Name()
 
+	// Best-effort cleanup: the success path has already closed and renamed the
+	// file, and the failure paths report their own error.
 	defer func() {
-		tmp.Close()
-		os.Remove(tmpName)
+		_ = tmp.Close()
+		_ = os.Remove(tmpName)
 	}()
 
 	if _, err := tmp.Write(content); err != nil {
@@ -497,9 +499,11 @@ func recordBackup(path string, content []byte) (string, error) {
 		return "", err
 	}
 	tmpName := tmp.Name()
+	// Best-effort cleanup: the success path has already closed and renamed the
+	// file, and the failure paths report their own error.
 	defer func() {
-		tmp.Close()
-		os.Remove(tmpName)
+		_ = tmp.Close()
+		_ = os.Remove(tmpName)
 	}()
 	if _, err := tmp.Write(data); err != nil {
 		return "", err

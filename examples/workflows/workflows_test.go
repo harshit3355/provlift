@@ -62,7 +62,9 @@ func fakeProvlift() int {
 		return 1
 	}
 	err = json.NewEncoder(log).Encode(arguments)
-	log.Close()
+	if closeErr := log.Close(); err == nil {
+		err = closeErr
+	}
 	if err != nil {
 		return 1
 	}

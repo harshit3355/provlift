@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 
 	version "github.com/hashicorp/go-version"
@@ -163,7 +164,7 @@ func applyDependencyConstraints(
 		if rest := upgrade.ExternalConstraint(st.ExternalConstraint, combined); rest != "" {
 			combined += ", " + rest
 		}
-		sources := append(st.ExternalSources, depgraph.Sources(local)...)
+		sources := slices.Concat(st.ExternalSources, depgraph.Sources(local))
 		st.SetExternalConstraint(combined, candidates)
 		st.ExternalSources = sources
 	}
