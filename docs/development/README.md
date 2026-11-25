@@ -54,7 +54,7 @@ pull request:
 | Job | Gate |
 |---|---|
 | Format and vet | `gofmt`, `go mod tidy`, `go vet`, `golangci-lint` (pinned version, [.golangci.yml](../../.golangci.yml)) |
-| Go unit and package tests | On Ubuntu, `windows-latest` and `macos-latest`. Ubuntu runs `go test -race ./...`, the coverage ≥ 80% gate and uploads the coverage report; Windows and macOS run `go test ./...` and fail if the `examples/workflows` tests skip |
+| Go unit and package tests | On Ubuntu, `windows-latest` and `macos-latest`. Ubuntu runs `go test -race ./...`, the coverage ≥ 80% gate and uploads the coverage report; Windows and macOS run `go test ./...`, and the Windows job fails if the `examples/workflows` tests skip |
 | Cross-compile | linux and darwin on amd64 and arm64; windows on amd64 |
 | Lint workflows | `actionlint` over `.github/workflows` *and* `examples/workflows` |
 | End to end | A real upgrade against the real registry and real Terraform |
