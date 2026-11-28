@@ -125,7 +125,8 @@ affected area, such as `upgrade`, `check`, `drift`, `registry` or `workflows`.
 3. Run the checks above.
 4. Open a pull request and fill in the template. Use a Conventional Commit
    style title — pull requests are squash-merged, so the title becomes the
-   commit message on `main`.
+   commit message on `main`. The title is checked automatically (the
+   `PR title` workflow) and the check runs again when you edit it.
 5. A maintainer will review it. CI must be green before merge; please respond
    to review comments by pushing new commits rather than force-pushing, so the
    review history stays readable.
